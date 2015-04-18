@@ -26,22 +26,25 @@ Route::get('/pickadate', function() {
     return View::make('pluginsJS.pickadate');
 });
 
-/*Route::get('/profile', function() {
-    if(Auth::check()){
-    return View::make('perfil.perfil')  PREGUNTARLE A PINEDA??
-                    ->with("nombre", Auth::user()->nombre);
-    } else {
-        return View::make('general.login');
-    }
-});*/
+/* Route::get('/profile', function() {
+  if(Auth::check()){
+  return View::make('perfil.perfil')  PREGUNTARLE A PINEDA??
+  ->with("nombre", Auth::user()->nombre);
+  } else {
+  return View::make('general.login');
+  }
+  }); */
 
-Route::get('/profile', array('before'=>'auth', function() {
-    return View::make('perfil.perfil')
-                    ->with("nombre", Auth::user()->nombre);
-}));
+Route::get('/profile', array('before' => 'auth', function() {
+        $publicaciones = Publicacion::orderBy('id', 'desc')->get(); //ordenar publicaciones por fecha
+        
+        return View::make('perfil.perfil')
+                        ->with("nombre", Auth::user()->nombre)
+                        ->with("publicaciones", $publicaciones);
+    }));
 
 Route::get('/', function() {
-    if(Auth::check()){
+    if (Auth::check()) {
         return Redirect::to("profile");  //Redirect::to es igual a return View::make ???
     }
     return View::make('general.login');
@@ -64,3 +67,4 @@ Route::get('/logout', function() {
 
 Route::controller('personal', 'PersonalController');
 Route::controller('clase', 'Class2Controller');
+Route::controller('publicacion', 'PublicacionController');
